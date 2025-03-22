@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:7
+    container_name: conjuego-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: conjuego
+
+  backend:
+    build:
+      context: ./conjuego-backend
+    container_name: conjuego-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/conjuego
+    volumes:
+      - ./conjuego-backend:/app
+    working_dir: /app
+    command: npm run dev
+
+volumes:
+  mongo-data:
